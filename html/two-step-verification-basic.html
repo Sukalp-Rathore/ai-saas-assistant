@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-nav-layout="vertical" data-vertical-style="overlay" data-theme-mode="light"
+    data-header-styles="light" data-menu-styles="light" data-toggled="close">
+
+<head>
+
+    <!-- Meta Data -->
+    <meta charset="UTF-8">
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title> Swara Baby </title>
+    <meta name="Description" content="Bootstrap Responsive Admin Web Dashboard HTML5 Template">
+    <meta name="Author" content="Spruko Technologies Private Limited">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="keywords"
+        content="admin,admin dashboard,admin panel,admin template,bootstrap,clean,dashboard,flat,jquery,modern,responsive,premium admin templates,responsive admin,ui,ui kit.">
+
+    <!-- Favicon -->
+    <link rel="icon" href="assets/images/brand-logos/favicon.ico" type="image/x-icon">
+
+    <!-- Main Theme Js -->
+    <script src="assets/js/authentication-main.js"></script>
+
+    <!-- Bootstrap Css -->
+    <link id="style" href="assets/libs/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Style Css -->
+    <link href="assets/css/styles.css" rel="stylesheet">
+
+    <!-- Icons Css -->
+    <link href="assets/css/icons.css" rel="stylesheet">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <!-- Toastify CSS -->
+    <link rel="stylesheet" href="assets/libs/toastify-js/src/toastify.css">
+
+    <!-- Toastr CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+</head>
+
+<body class="authentication-background">
+
+    <div class="container-lg">
+        <div
+            class="row justify-content-center align-items-center authentication two-step-verification authentication-basic h-100">
+            <div class="col-xxl-4 col-xl-5 col-lg-5 col-md-6 col-sm-8 col-12">
+                <div class="card custom-card my-4">
+                    <div class="card-body p-5">
+                        <p class="h5 mb-2 text-center">Choose Plant</p>
+                        <p class="mb-4 text-muted op-7 fw-normal text-center fs-12">Please choose a plant from the
+                            dropdown to use dashboard.</p>
+                        <div class="row gy-3">
+                            <form id="plantForm" method="POST" action="{{ route('plant.select') }}">
+                                @csrf
+                                <div class="col-xl-12 mb-2">
+                                    <div class="row gx-3">
+                                        <select class="js-example-placeholder-single js-states form-control">
+                                            @foreach ($plants as $p)
+                                            <option value="{{$p->order_id}}" id="order_id">{{$p->order_id}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-xl-12 d-grid mt-2">
+                                    <a href="index.html" class="btn btn-primary">Continue</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toastr JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Internal Two Step Verification JS -->
+    <script src="assets/js/two-step-verification.js"></script>
+
+    <!-- Show Password JS -->
+    <script src="assets/js/show-password.js"></script>
+
+    <!-- Toastify JS -->
+    <script src="assets/libs/toastify-js/src/toastify.js"></script>
+
+    <script>
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        $('#otpForm').on('submit', function (e) {
+            e.preventDefault();
+            var form = $(this);
+            var otp = $('#one').val() + $('#two').val() + $('#three').val() + $('#four').val();
+            $.ajax({
+                type: form.attr('method'),
+                url: form.attr('action'),
+                data: {
+                    otp: otp
+                },
+                success: function (response) {
+                    if (response.otp_modal) {
+                        toastr.success("OTP Verified");
+                        window.location.href = response.redirect_url;
+                    } else if (response.success) {
+                        toastr.success("OTP Verified");
+                        window.location.href = response.redirect_url;
+                    }
+                },
+                error: function (response) {
+                    if (response.responseJSON && response.responseJSON.error) {
+                        toastr.error(response.responseJSON.error);
+                    } else {
+                        toastr.error("An unexpected error occurred.");
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
